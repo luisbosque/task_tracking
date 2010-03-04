@@ -8,15 +8,31 @@ import pygtk
 pygtk.require("2.0")
 import gtk
 import os
+import sys
+import yaml
+
+if not os.path.isdir(os.environ["HOME"] + '/.task_tracking'):
+  os.mkdir(os.environ["HOME"] + '/.task_tracking')
 
 ### Variables ###
 ##
-database_name = os.environ["HOME"] + '/.scrum'
-from_email = ""
-to_email = ""
-sendmail_server = "localhost"
-worker_name = "" # for example "Luis"
+conffile = os.environ["HOME"] + '/.task_tracking/conf.yml'
 ############
+
+### YAML Conf. Load ####
+##
+if not os.path.isfile(conffile):
+  print "No configuration file found. Aborting"
+  sys.exit(1)
+else:
+  conf = yaml.load(open(conffile))
+
+database_name = os.environ["HOME"] + '/.task_tracking/' + conf['database']['name']
+from_email = conf['email']['from_addr']
+to_email = conf['email']['to_addr']
+sendmail_server = conf['email']['sendmail']['host']
+worker_name = conf['email']['worker_name']
+########################
 
 ### Functions ###
 ##
